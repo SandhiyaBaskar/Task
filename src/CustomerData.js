@@ -16,6 +16,7 @@ export default function CustomerData() {
   }, []);
   async function initialize() {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
+    console.log("is  ", isLoggedIn);
     if (isLoggedIn) {
       let result = [];
       let val = JSON.parse(isLoggedIn);

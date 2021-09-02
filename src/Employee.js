@@ -16,6 +16,7 @@ export default function Employee() {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
     if (isLoggedIn) {
       let val = JSON.parse(isLoggedIn);
+      console.log("val ei emo", val);
       setEmail(val.email);
     }
   }, []);
@@ -25,6 +26,7 @@ export default function Employee() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    console.log("email ", email);
     let status = Storage.AppendStoarage("Employee", {
       name,
       age,

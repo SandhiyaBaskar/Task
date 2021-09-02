@@ -3,8 +3,10 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./customerlogin.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Storage from "./Storage";
+import { userAdd } from "./Redux/actions";
+import store from "./Redux/store";
 import { useHistory } from "react-router-dom";
+import * as actions from "./Redux/actionTypes";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,14 +19,25 @@ export default function Register() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    Storage.AppendStoarage(type, { email, password });
-    if (type == "Admin") {
-      history.push("/CustomerData");
+    let existingData = store.getState();
+    var duplicateCheck = existingData.filter(function (x) {
+      return x.email === email && x.password === password && x.type === type;
+    });
+
+    console.log(" check store ", store.getState());
+    console.log("duplicate check ", duplicateCheck);
+    if (!duplicateCheck.length) {
+      store.dispatch(userAdd(email, password, type));
+      console.log(" add store ", store.getState());
+      if (type == "Admin") {
+        history.push("/CustomerData");
+      } else {
+        history.push("/Employee");
+      }
     } else {
-      history.push("/Employee");
+      alert("Data already exists");
     }
   }
-
   return (
     <div className="Login">
       <Form onSubmit={handleSubmit}>

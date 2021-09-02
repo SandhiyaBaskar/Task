@@ -5,7 +5,7 @@ import "./customerlogin.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Storage from "./Storage";
 import { useHistory } from "react-router-dom";
-
+import store from "./Redux/store";
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,8 +27,11 @@ export default function AdminLogin() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    let status = Storage.CheckData("Admin", email, password);
-    if (status.length > 0) {
+    let existingData = store.getState();
+    var status = existingData.filter(function (x) {
+      return x.email === email && x.password === password;
+    });
+    if (status.length > 0 && status[0].type === "Admin") {
       localStorage.setItem(
         "isLoggedIn",
         JSON.stringify({ email, password, type: "Admin" })

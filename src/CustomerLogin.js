@@ -5,13 +5,14 @@ import "./customerlogin.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useHistory } from "react-router-dom";
 import Storage from "./Storage";
+import * as actions from "./Redux/actionTypes";
+import store from "./Redux/store";
 export default function CustomerLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn");
-
     if (isLoggedIn) {
       let val = JSON.parse(isLoggedIn);
       if (val.type !== "Admin") {
@@ -27,8 +28,11 @@ export default function CustomerLogin() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    let status = Storage.CheckData("Customer", email, password);
-    if (status.length > 0) {
+    let existingData = store.getState();
+    var status = existingData.filter(function (x) {
+      return x.email === email && x.password === password;
+    });
+    if (status.length > 0 && status[0].type === "Customer") {
       localStorage.setItem(
         "isLoggedIn",
         JSON.stringify({ email, password, type: "Customer" })
